@@ -1,0 +1,67 @@
+---
+title: "BST260 Final Project Proposal"
+author: "Jingyuan Xiao"
+format: html
+---
+
+**To:** BST260 Teaching Team, Fall 2026\
+**From:** Jingyuan Xiao
+
+## Project overview
+
+For my BST260 final project, I plan to analyze two public health datasets from class: CDC waterborne illness outbreaks and CDC homicide mortality. The deliverables include a reproducible R package and a pkgdown website with one analysis vignette for each dataset. My goal is to describe key patterns, evaluate associations, and clearly explain data quality and limitations. Because these analyses are observational, I will not make causal claims.
+
+## Study 1: CDC waterborne illness outbreaks
+
+### Research question
+
+**How does the reported cause (etiology) of a U.S. waterborne disease outbreak relate to the number of illnesses reported?**
+
+### Data source, population, and unit of analysis
+
+This study uses the `waterborne` dataset from the `finalproject` course package, which comes from the CDC waterborne outbreak records discussed in class. The study population includes reported U.S. waterborne outbreaks in this dataset, not all waterborne illnesses nationwide. **Each observation is one reported outbreak.** Since the data are stored as a list of records, the first step is to convert them into a tidy data frame. The final vignette will document the original CDC source, the data retrieval process, the date range, and the variable definitions.
+
+### Exposure and outcome
+
+The **exposure** is `etiology`, the categorical variable for the reported cause of an outbreak. After reviewing all categories, rare and related causes will be grouped using documented rules. `Unknown` or unconfirmed causes will remain in their own category rather than being merged into known groups. Checking `etiology_status` will also help interpret these causes.
+
+The **outcome** is `illnesses`, the number of reported illnesses per outbreak. Because it is stored as text in the raw records, it must be converted to a nonnegative integer and checked for invalid or missing values. Outbreak size measures reported cases per event, not a population incidence rate.
+
+### Potential confounders and missing data
+
+Before fitting models, **calendar year**, **geographic location** (`state` or U.S. region), **water type** (`water_type`), and **outbreak setting** (`setting`) will be evaluated as potential confounders. These factors could relate to both the outbreak cause and its size. Covariates will only enter the model if they have sufficient data and make sense clinically and temporally. Missingness will be reported for `etiology`, `illnesses`, and all covariates. Records with missing or invalid illness counts will be excluded from model analyses, and the exact number dropped will be documented. For categorical variables, recorded `Unknown` entries will be separated from truly missing values. Finally, summary statistics will be compared before and after exclusions.
+
+### Analysis plan
+
+Descriptive summaries of outbreak counts and illness distributions by etiology will use medians, ranges, and interquartile ranges. Plots will compare outbreak sizes across cause categories and check if patterns change by year or region. Because illness counts are often heavily skewed and overdispersed, the analysis will test a Poisson regression first and switch to a negative binomial regression if the Poisson variance assumption fails. Effect estimates will be reported with confidence intervals, noting that differences in local reporting and surveillance may affect the results.
+
+## Study 2: CDC homicide mortality
+
+### Research question
+
+**Do time trends in reported homicide death rates vary across geographic regions of the United States?**
+
+### Data source, population, and unit of analysis
+
+This study uses the `cdcmurd` dataset from the `finalproject` package, which contains the CDC homicide mortality data from BST260 Problem Set 3. The dataset has **612 rows** and five columns: `YEAR`, `Location`, `Death.Rate`, `Deaths`, and `URL`. The study population includes all U.S. states and jurisdictions in these records for the available years. **Each observation is one location-year record.** The analysis will verify the exact years and jurisdictions covered, document the CDC source and variable definitions, and use the `URL` column to check the original source pages.
+
+### Exposure and outcome
+
+The primary **exposure** is **geographic region**, a categorical variable created from the state abbreviations in `Location` using standard U.S. region definitions. Because the District of Columbia is not in R's default `state.region` vector, I will check if it appears in the data and document how it is assigned. Using `YEAR` as a continuous time variable, the model will include an **interaction between region and year** to test if trends differ across regions. The **outcome** is `Death.Rate`, a numeric homicide mortality rate. Its exact CDC definition and units will be verified before interpreting the results. `Deaths` will also be summarized for context, while remaining distinct from the population-adjusted death rate.
+
+### Potential confounders and missing data
+
+Adjusting for **calendar year** is necessary when comparing regions because homicide rates change over time. Regional differences also depend on age structure, socioeconomic status, and urbanization. However, these variables are **not included in the dataset**, so they cannot be adjusted for. Therefore, regional comparisons will show descriptive associations rather than causal regional effects. The data cleaning step will check for missing values in `YEAR`, `Location`, and `Death.Rate`, duplicate location-year rows, and regions with incomplete years. Records missing required fields will be removed, with the exact drop count reported. If year coverage varies by region, the analysis will either restrict comparisons to shared years or clearly label the incomplete comparisons.
+
+### Analysis plan
+
+Homicide death rates will be summarized by year and region using means, medians, and measures of spread. Line plots will show regional trends over time and compare rates across individual states. Next, a regression model with region, year, and their interaction will test whether time trends vary by region. Model diagnostics will be checked to ensure careful interpretation. Because repeated observations from the same state are not independent, the regression will either account for state-level clustering or be presented as an exploratory analysis.
+
+## Reproducibility, limitations, and final products
+
+Full documentation will cover how each dataset was retrieved and cleaned, including source links, variable definitions, coding rules, and missing-data summaries. Each vignette will clearly present the research question, summary statistics, figures, methods, findings, and limitations. Key limitations for the waterborne data include uneven outbreak detection, unknown etiologies, and reporting differences. Key limitations for the homicide data include varying population demographics, repeated observations within states, and unmeasured socioeconomic confounders.
+
+The final deliverables are a valid R package named `finalproject` and a public pkgdown website containing **at least two separate analysis vignettes**, one for each dataset. All code will be fully reproducible, and conclusions will clearly distinguish observed patterns from causal claims.
+
+**GitHub repository:** https://github.com/jxiao68/finalproject\
+**Project website:** https://jxiao68.github.io/finalproject/
