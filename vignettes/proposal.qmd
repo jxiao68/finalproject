@@ -65,3 +65,21 @@ The final deliverables are a valid R package named `finalproject` and a public p
 
 **GitHub repository:** https://github.com/jxiao68/finalproject\
 **Project website:** https://jxiao68.github.io/finalproject/
+
+ 
+## AI Usage Statement
+
+### 1. AI Model Used
+
+I used ChatGPT (GPT-6) to help prepare my BST260 final project proposal.
+
+### 2. AI Usage and Prompts
+
+I used AI to organize project requirements, brainstorm research topics, understand statistical methods, and improve my writing.
+
+**Prompts:**
+- Help me organize the requirements and tasks for my BST260 final project.
+- Brainstorm possible research topics using CDC datasets.
+- Explain the statistical methods I could use for my analysis.
+- Help me check grammar and improve the clarity of my writing.
+
